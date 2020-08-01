@@ -1,0 +1,48 @@
+Step 1 :	Include Libraries
+
+library('kohonen')
+library(mlbench)
+
+kohonen is for SOM functions and mlbench is for LetterRecognition Dataset
+
+Step 2 :	Color for Grid
+
+# Function for color palette
+coolBlueHotRed <- function(n, alpha = 1) {rainbow(n, end=4/6, alpha=alpha)[n:1]}
+
+We define a color palette coolBlueHotRed with which we will plot out result in grid
+
+Step 3 :	Data Input
+
+# Get Training Data
+data("LetterRecognition")
+lettr <- as.numeric(LetterRecognition$lettr)
+data_input <- cbind(lettr, as.data.frame(scale(LetterRecognition[-1])))
+data_train <- as.matrix(data_input)
+
+First, we load LetterRecognition data. Now in whole data, only first column consists of letters, else have numerical values.
+So, we convert first columnt to numeric values and store it in lettr.
+Then, we scale remaining columns and combine them with lettr into data_input
+data_train contains the same data_input but in matrix form for calculations.
+
+Step 4 :	Define Grid
+
+# Generate Grid
+grid <- somgrid(xdim=20, ydim=20, topo="hexagonal")
+
+We defined a grid with 20*20 dimensions and hexagonall representation.
+
+Step 5 :	Train model
+
+# SOM
+som_model <- som(data_train, grid=grid, alpha=c(0.05,0.01), radius=1)
+
+We trained our model with learning rate between 0.05 and 0.01 and the SOM initial spacial radius as 1.
+
+Step 6 :	Plot the results
+
+# Specify which column to plot
+col <- 1
+plot(som_model, type="property", property=data_train[,col], main=names(data_train)[col], palette.name=coolBlueHotRed)
+
+First we specify column number, and then we plot som_model, with firts column of data as input, and palette we defied at the beginning.
